@@ -52,16 +52,19 @@ router.get('/:id', (req, res) => {
 
 // Create User
 router.post('/', (req, res) => {
+    const {name, email, password} = req.body;
+    
     const User = {
-
-      name: req.body.name,
-      email: req.body.email,
+      name,
+      email,
+      password,     
       active : 1
     };
 
     if (!User.name || !User.email) {
       return res.status(400).json({ msg: 'Please include a name and email' });
     }
+  
   
     connection.query('INSERT INTO users SET ?', User, function (error, results, fields) {
         if(error){
@@ -86,7 +89,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
     const user = req.body;
     
-    connection.query('UPDATE users SET name = ?, email = ?, active = ? WHERE id = ?', [user.name, user.email, user.active, req.params.id], function (error, results, fields) {
+    connection.query('UPDATE users SET name = ?, email = ?, password = ?, active = ? WHERE id = ?', [user.name, user.email, user.password, user.active, req.params.id], function (error, results, fields) {
         
         if(error){
             //var e = error.sqlMessage;
