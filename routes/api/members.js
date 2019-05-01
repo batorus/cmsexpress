@@ -169,10 +169,18 @@ router.delete('/:id', (req, res) => {
 
 
 // Auth User
-  router.post('/auth', async (req, res) => {
+  router.post('/auth', async (req, res, next) => {
     const { email, password } = req.body;
 
-
+    const token = jwt.sign(req.body, "secret", {
+           expiresIn: '15m'
+   });
+   
+    const { iat, exp } = jwt.decode(token);
+      // Respond with token
+    res.send({ iat, exp, token });
+   
+   //res.status(400).json({ token});
 
   });
 

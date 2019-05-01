@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const jwt = require('jsonwebtoken');
 const app = express();
 //const connection = require('./db/connection');
 //var mysql  = require('mysql');
@@ -24,6 +25,19 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use((req, res, next) => {
+    const token = req.get('authorization');
+    console.log(token);
+    jwt.verify(token, "secret", function (err, decoded) {
+
+        if (err) {
+            return res.status(404).json({mess: err.message})
+        };
+
+        req.user = decoded;
+        next();
+    });
+})
 
 
 
