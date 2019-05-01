@@ -1,5 +1,6 @@
 const express = require('express');
-const uuid = require('uuid');
+
+const bcrypt = require('bcryptjs');
 const router = express.Router();
 const members = require('../../Members');
 const connection = require('../../db/connection');
@@ -54,36 +55,48 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
     const {name, email, password} = req.body;
     
-    const User = {
+    const user = {
       name,
       email,
       password,     
       active : 1
     };
 
-    if (!User.name || !User.email) {
+    if (!user.name || !user.email) {
       return res.status(400).json({ msg: 'Please include a name and email' });
     }
   
-  
-    connection.query('INSERT INTO users SET ?', User, function (error, results, fields) {
-        if(error){
-            //var e = error.sqlMessage;
-            res.json({error});
-            res.end();
-        }
-        else{
-            res.send('Inserted');
-            res.end();
-        }
+   bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(user.password, salt, (err, hash) => {
+        // Hash Password
+        user.password = hash;
+        
+        connection.query('INSERT INTO users SET ?', user, function (error, results, fields) {
+            if(error){
+                //var e = error.sqlMessage;
+                res.json({error});
+                res.end();
+            }
+            else{
+                res.send('Inserted');
+                res.end();
+            }
 
+        });
+        // Save User
+//        try {
+//          const newUser = await user.save();
+//          res.send(201);
+//          next();
+//        } catch (err) {
+//          return next(new errors.InternalError(err.message));
+//        }
+      });
     });
-
-    
-     //res.json({k:query.sql});
-
-    // res.redirect('/');
   });
+
+
+
 
   // Update user
 router.put('/:id', (req, res) => {
