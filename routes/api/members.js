@@ -3,49 +3,61 @@ const uuid = require('uuid');
 const router = express.Router();
 const members = require('../../Members');
 const connection = require('../../db/connection');
-// Gets All Members
-router.get('/', (req, res) => res.json(members));
+
+    // Gets All Users
+    router.get('/', (req, res) =>{
+        connection.query('SELECT * FROM users', function (error, results, fields) {
+            if(error){
+
+                res.json({error});
+                res.end();
+            }
+            else{
+                res.json({results});
+                res.end();
+
+            }
+
+        });
+    });
 
 // Get Single Member
 router.get('/:id', (req, res) => {
     
-  const found = members.some(member => member.id === parseInt(req.params.id));
-
-  if (found) {
-    res.json(members.filter(member => member.id === parseInt(req.params.id)));
-  } else {
-    res.status(400).json({ msg: `No member with the id of ${req.params.id}` });
-  }
+//  const found = members.some(member => member.id === parseInt(req.params.id));
+//
+//  if (found) {
+//    res.json(members.filter(member => member.id === parseInt(req.params.id)));
+//  } else {
+//    res.status(400).json({ msg: `No member with the id of ${req.params.id}` });
+//  }
 });
 
-// Create Member
+// Create User
 router.post('/', (req, res) => {
     const User = {
-      //id: uuid.v4(),
+
       name: req.body.name,
       email: req.body.email,
       active : 1
     };
-    //  res.json({usr:User});
+
     if (!User.name || !User.email) {
       return res.status(400).json({ msg: 'Please include a name and email' });
     }
   
-    //members.push(newMember);
+    connection.query('INSERT INTO users SET ?', User, function (error, results, fields) {
+        if(error){
+            //var e = error.sqlMessage;
+            res.json({error});
+            res.end();
+        }
+        else{
+            res.send('Inserted');
+            res.end();
+        }
 
-        var query = connection.query('INSERT INTO users SET ?', User, function (error, results, fields) {
-            if(error){
-                //var e = error.sqlMessage;
-                res.json({err:error});
-                res.end();
-            }
-            else{
-                res.send('Inserted');
-                res.end();
-            }
-              //if(error) console.log(error.code) ;
-            connection.end();
-        });
+    });
 
     
      //res.json({k:query.sql});
