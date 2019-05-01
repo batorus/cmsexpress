@@ -31,7 +31,7 @@ router.get('/:id', (req, res) => {
             res.end();
         }
         else{
-            if(results.length>0)
+            if(results.length > 0)
               res.json({results});
             else
               res.status(400).json({msg:`No member with the id of ${req.params.id}`});
@@ -84,21 +84,39 @@ router.post('/', (req, res) => {
 
   // Update Member
 router.put('/:id', (req, res) => {
-    const found = members.some(member => member.id === parseInt(req.params.id));
-  
-    if (found) {
-      const updMember = req.body;
-      members.forEach(member => {
-        if (member.id === parseInt(req.params.id)) {
-          member.name = updMember.name ? updMember.name : member.name;
-          member.email = updMember.email ? updMember.email : member.email;
-  
-          res.json({ msg: 'Member updated', member });
+    const user = req.body;
+    
+    connection.query('UPDATE users SET name = ?, email = ?, active = ? WHERE id = ?', [user.name, user.email, user.active, req.params.id], function (error, results, fields) {
+        
+        if(error){
+            //var e = error.sqlMessage;
+            res.json({error});
+            res.end();
         }
-      });
-    } else {
-      res.status(400).json({ msg: `No member with the id of ${req.params.id}` });
-    }
+        else{
+            if(results.affectedRows > 0)
+              res.json({results});
+            else
+              res.status(400).json({msg:`Unable to update query for id: ${req.params.id}`});
+            res.end();
+        }
+        
+    });
+//    const found = members.some(member => member.id === parseInt(req.params.id));
+//  
+//    if (found) {
+//      const updMember = req.body;
+//      members.forEach(member => {
+//        if (member.id === parseInt(req.params.id)) {
+//          member.name = updMember.name ? updMember.name : member.name;
+//          member.email = updMember.email ? updMember.email : member.email;
+//  
+//          res.json({ msg: 'Member updated', member });
+//        }
+//      });
+//    } else {
+//      res.status(400).json({ msg: `No member with the id of ${req.params.id}` });
+//    }
   });
 
   // Delete Member
