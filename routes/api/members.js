@@ -1,12 +1,13 @@
 const express = require('express');
-
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const auth = require('./auth');
 const router = express.Router();
-const members = require('../../Members');
+
 const connection = require('../../db/connection');
 
     // Gets All Users
-router.get('/', (req, res) =>{
+router.get('/', (req, res, next) =>{
     connection.query('SELECT * FROM users', function (error, results, fields) {
         if(error){
 
@@ -96,8 +97,6 @@ router.post('/', (req, res) => {
   });
 
 
-
-
   // Update user
 router.put('/:id', (req, res) => {
     const user = req.body;
@@ -166,5 +165,15 @@ router.delete('/:id', (req, res) => {
         //    }
   });
 
+
+
+
+// Auth User
+  router.post('/auth', async (req, res) => {
+    const { email, password } = req.body;
+
+
+
+  });
 
 module.exports = router;
