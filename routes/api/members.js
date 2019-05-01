@@ -5,24 +5,41 @@ const members = require('../../Members');
 const connection = require('../../db/connection');
 
     // Gets All Users
-    router.get('/', (req, res) =>{
-        connection.query('SELECT * FROM users', function (error, results, fields) {
-            if(error){
+router.get('/', (req, res) =>{
+    connection.query('SELECT * FROM users', function (error, results, fields) {
+        if(error){
 
-                res.json({error});
-                res.end();
-            }
-            else{
-                res.json({results});
-                res.end();
+            res.json({error});
+            res.end();
+        }
+        else{
+            res.json({results});
+            res.end();
 
-            }
+        }
 
-        });
     });
+});
 
-// Get Single Member
+// Get Single User
 router.get('/:id', (req, res) => {
+    
+     connection.query('SELECT * FROM users WHERE id = ' + connection.escape(req.params.id), function (error, results, fields) {
+        if(error){
+
+            res.json({error});
+            res.end();
+        }
+        else{
+            if(results.length>0)
+              res.json({results});
+            else
+              res.status(400).json({msg:`No member with the id of ${req.params.id}`});
+            res.end();
+
+        }
+
+    });
     
 //  const found = members.some(member => member.id === parseInt(req.params.id));
 //
