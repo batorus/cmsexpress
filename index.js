@@ -7,16 +7,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// app.get('/', (req, res)=>{
-
-//     res.sendFile(path.join(__dirname,'public','index.html'));
-// } )
-
-
-  //get all members
-// app.get("/api/members/", (req,res)=>{
-//     res.json(members);
-// })
 
 
 
