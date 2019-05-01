@@ -2,7 +2,7 @@ const express = require('express');
 const uuid = require('uuid');
 const router = express.Router();
 const members = require('../../Members');
-
+const connection = require('../../db/connection');
 // Gets All Members
 router.get('/', (req, res) => res.json(members));
 
@@ -20,19 +20,36 @@ router.get('/:id', (req, res) => {
 
 // Create Member
 router.post('/', (req, res) => {
-    const newMember = {
-      id: uuid.v4(),
+    const User = {
+      //id: uuid.v4(),
       name: req.body.name,
       email: req.body.email,
-      status: 'active'
+      active : 1
     };
-  
-    if (!newMember.name || !newMember.email) {
+    //  res.json({usr:User});
+    if (!User.name || !User.email) {
       return res.status(400).json({ msg: 'Please include a name and email' });
     }
   
-    members.push(newMember);
-    res.json(members);
+    //members.push(newMember);
+
+        var query = connection.query('INSERT INTO users SET ?', User, function (error, results, fields) {
+            if(error){
+                //var e = error.sqlMessage;
+                res.json({err:error});
+                res.end();
+            }
+            else{
+                res.send('Inserted');
+                res.end();
+            }
+              //if(error) console.log(error.code) ;
+            connection.end();
+        });
+
+    
+     //res.json({k:query.sql});
+
     // res.redirect('/');
   });
 
