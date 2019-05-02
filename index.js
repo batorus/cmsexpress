@@ -33,6 +33,7 @@ app.set('view engine', 'handlebars');
 
 // Members API Routes
 app.use('/api/members', require('./routes/api/members'));
+app.use('/app/routesusers', require('./routes/app/routesusers'));
 
 const PORT = process.env.PORT || 5000;
 
