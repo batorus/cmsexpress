@@ -137,24 +137,36 @@ router.post('/', (req, res) => {
 
   // Update user
 router.put('/:id', (req, res) => {
-    const user = req.body;
+    const data = req.body;
     
-    connection.query('UPDATE users SET name = ?, email = ?, password = ?, active = ? WHERE id = ?', [user.name, user.email, user.password, user.active, req.params.id], function (error, results, fields) {
-        
-        if(error){
-            //var e = error.sqlMessage;
-            res.json({error});
-            res.end();
-        }
-        else{
-            if(results.affectedRows > 0)
-              res.json({results});
-            else
-              res.status(400).json({msg:`Unable to update user for id: ${req.params.id}`});
-            res.end();
-        }
-        
-    });
+   users.updateRecord(req.params.id, data)
+        .then(function(results){
+            //use the results here
+          //for now just output them
+          res.json({results});
+            
+        })
+        .catch(function(err){
+           //console.log("Promise rejection error: "+err);
+           res.json({error:err.message});
+        })  
+    
+//    connection.query('UPDATE users SET name = ?, email = ?, password = ?, active = ? WHERE id = ?', [user.name, user.email, user.password, user.active, req.params.id], function (error, results, fields) {
+//        
+//        if(error){
+//            //var e = error.sqlMessage;
+//            res.json({error});
+//            res.end();
+//        }
+//        else{
+//            if(results.affectedRows > 0)
+//              res.json({results});
+//            else
+//              res.status(400).json({msg:`Unable to update user for id: ${req.params.id}`});
+//            res.end();
+//        }
+//        
+//    });
 //    const found = members.some(member => member.id === parseInt(req.params.id));
 //  
 //    if (found) {
@@ -171,25 +183,36 @@ router.put('/:id', (req, res) => {
 //      res.status(400).json({ msg: `No member with the id of ${req.params.id}` });
 //    }
   });
+  
 
   // Delete Member
-router.delete('/:id', (req, res) => {
+router.delete('/:id', (req, res, next) => {
     
-    connection.query('DELETE FROM users WHERE id = ?', [req.params.id], function (error, results, fields) {
-        
-        if(error){
-            //var e = error.sqlMessage;
-            res.json({error});
-            res.end();
-        }
-        else{
-            if(results.affectedRows > 0)
-              res.json({results});
-            else
-              res.status(400).json({msg:`Unable to delete user for id: ${req.params.id}`});
-            res.end();
-        }
-    });
+     users.deleteRecord(req.params.id)
+        .then(function(results){
+
+          res.json({results});
+            
+        })
+        .catch(function(err){
+           res.json({error:err.message});
+        })
+    
+//    connection.query('DELETE FROM users WHERE id = ?', [req.params.id], function (error, results, fields) {
+//        
+//        if(error){
+//            //var e = error.sqlMessage;
+//            res.json({error});
+//            res.end();
+//        }
+//        else{
+//            if(results.affectedRows > 0)
+//              res.json({results});
+//            else
+//              res.status(400).json({msg:`Unable to delete user for id: ${req.params.id}`});
+//            res.end();
+//        }
+//    });
     
         //    const found = members.some(member => member.id === parseInt(req.params.id));
         //  

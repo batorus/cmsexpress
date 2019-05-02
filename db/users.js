@@ -2,24 +2,7 @@
 const connection = require('./connection');
 const bcrypt = require('bcryptjs');
 
-//exports.getUsers = (req, res)=>{
-//    connection.query('SELECT * FROM users', function (error, results, fields) {
-//        if(error){
-//
-//            res.json({error});
-//            res.end();
-//          //  return error;
-//        }
-//        else{
-//            res.json({results});
-//            res.end();
-//
-//           //  return results;
-//
-//        }
-//
-//    });
-//}
+
 
 module.exports.getAll = () =>{
     return new Promise(function(resolve, reject){
@@ -83,3 +66,57 @@ module.exports.addRecord = (record)=>{
     });
 };
 
+
+module.exports.deleteRecord = (id)=>{
+    return new Promise(function(resolve, reject){     
+        connection.query('DELETE FROM users WHERE id = ?', [id], function (error, results, fields){
+            if(error){
+                reject(new Error(error));
+            }
+            else{
+
+                if(results.affectedRows > 0)
+                    resolve(results);
+                else
+                    reject(new Error("Unable to delete user for id: "+id));
+            }
+
+        });
+    });   
+
+};
+
+
+module.exports.updateRecord = (id, data)=>{
+    
+    return new Promise(function(resolve, reject){
+        
+
+        bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(data.password, salt, (err, hash) => {
+   
+            // Hash Password
+          data.password = hash;        
+        
+            connection.query('UPDATE users SET name = ?, email = ?, password = ?, active = ? WHERE id = ?',
+                            [data.name, data.email, data.password, data.active, id], 
+                            function (error, results, fields) {
+
+                if(error){
+                    reject(new Error(error));
+                }
+                else{
+                    if(results.affectedRows > 0)
+                        resolve(results);
+                    else
+                        reject(new Error("Unable to delete user for id: "+id));
+
+                }
+            });
+            
+        });
+      });             
+
+    });   
+
+};
