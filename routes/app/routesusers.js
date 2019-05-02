@@ -14,7 +14,7 @@ router.get('/index', (req, res, next) =>{
         .then(function(results){
 
   
-            res.render('index', {
+            res.render('users/index', {
                 title: 'User App',
                 results
             })
@@ -35,7 +35,7 @@ router.get('/edit/:id', (req, res, next) => {
           //for now just output them
           //res.json({results});
 
-            res.render('edit', {
+            res.render('users/edit', {
                 title: 'Update User',
                 results
             })
