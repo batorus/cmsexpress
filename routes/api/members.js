@@ -12,7 +12,12 @@ router.get('/', (req, res, next) =>{
 
     users.getAll()
         .then(function(results){
-          res.json({results});
+         // res.json({results});
+  
+            res.render('index', {
+                title: 'User App',
+                results
+            })
 
         })
         .catch(function(err){

@@ -1,12 +1,16 @@
 const express = require('express');
 const path = require('path');
 const jwt = require('jsonwebtoken');
+var exphbs  = require('express-handlebars');
 const app = express();
 
 // Body Parser Middleware
 //for reading raw json and to be able to work with forms
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 
 //app.use((req, res, next) => {
 //    const token = req.get('authorization');
