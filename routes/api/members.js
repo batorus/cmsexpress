@@ -2,46 +2,69 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const auth = require('./auth');
+const users = require('../../db/users')
 const router = express.Router();
 
 const connection = require('../../db/connection');
 
     // Gets All Users
 router.get('/', (req, res, next) =>{
-    connection.query('SELECT * FROM users', function (error, results, fields) {
-        if(error){
+//    connection.query('SELECT * FROM users', function (error, results, fields) {
+//        if(error){
+//
+//            res.json({error});
+//            res.end();
+//        }
+//        else{
+//            res.json({results});
+//            res.end();
+//
+//        }
+//
+//    });
+      // users.getUsers(req, res);
+//      res.json({result});
 
-            res.json({error});
-            res.end();
-        }
-        else{
-            res.json({results});
-            res.end();
 
-        }
+    users.getUsers()
+        .then(function(results){
+          res.json({results});
 
-    });
+        })
+        .catch(function(err){
+          console.log("Promise rejection error: "+err);
+        })
 });
 
 // Get Single User
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res, next) => {
     
-     connection.query('SELECT * FROM users WHERE id = ' + connection.escape(req.params.id), function (error, results, fields) {
-        if(error){
-
-            res.json({error});
-            res.end();
-        }
-        else{
-            if(results.length > 0)
-              res.json({results});
-            else
-              res.status(400).json({msg:`No user with the id: ${req.params.id}`});
-            res.end();
-
-        }
-
-    });
+      users.getUserById(req.params.id)
+        .then(function(results){
+          res.json({results});
+            
+        })
+        .catch(function(err){
+          console.log("Promise rejection error: "+err);
+            res.json({error:err.message});
+        })
+    
+//     connection.query('SELECT * FROM users WHERE id = ' + connection.escape(req.params.id), function (error, results, fields) {
+//        if(error){
+//
+//            res.json({error});
+//            res.end();
+//        }
+//        else{
+//            if(results.length > 0)
+//              res.json({results});
+//            else
+//              res.status(400).json({msg:`No user with the id: ${req.params.id}`});
+//            res.end();
+//
+//        }
+//
+//    });
     
 //  const found = members.some(member => member.id === parseInt(req.params.id));
 //
