@@ -63,7 +63,9 @@ router.post('/', (req, res) => {
         .then(function(results){
             //use the results here
           //for now just output them
-          res.json({results});
+          //res.json({results});
+          
+          res.redirect("/api/members");
             
         })
         .catch(function(err){
