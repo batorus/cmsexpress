@@ -1,14 +1,14 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const auth = require('./auth');
+//const auth = require('./auth');
 const users = require('../../db/users')
 const router = express.Router();
 
 const connection = require('../../db/connection');
 
 // Get All Users
-router.get('/', (req, res, next) =>{
+router.get('/index', (req, res, next) =>{
 
     users.getAll()
         .then(function(results){
@@ -27,13 +27,18 @@ router.get('/', (req, res, next) =>{
 });
 
 // Get Single User
-router.get('/:id', (req, res, next) => {
+router.get('/edit/:id', (req, res, next) => {
     
       users.getById(req.params.id)
         .then(function(results){
             //use the results here
           //for now just output them
-          res.json({results});
+          //res.json({results});
+
+            res.render('edit', {
+                title: 'Update User',
+                results
+            })
             
         })
         .catch(function(err){
@@ -45,7 +50,7 @@ router.get('/:id', (req, res, next) => {
 });
 
 // Create User
-router.post('/', (req, res) => {
+router.post('/create', (req, res) => {
     const {name, email, password} = req.body;
     
     const user = {
@@ -63,9 +68,8 @@ router.post('/', (req, res) => {
         .then(function(results){
             //use the results here
           //for now just output them
-          res.json({results});
           
-//          res.redirect("/api/members");
+          res.redirect("/app/users/index");
             
         })
         .catch(function(err){
@@ -78,15 +82,15 @@ router.post('/', (req, res) => {
 
 
   // Update user
-router.put('/:id', (req, res) => {
+router.post('/update/:id', (req, res) => {
     const data = req.body;
     
    users.updateRecord(req.params.id, data)
         .then(function(results){
             //use the results here
           //for now just output them
-          res.json({results});
-            
+         // res.json({results});
+           res.redirect("/app/users/index"); 
         })
         .catch(function(err){
 
@@ -97,39 +101,38 @@ router.put('/:id', (req, res) => {
   });
   
 
-  // Delete Member
-router.delete('/:id', (req, res, next) => {
+  // Delete 
+router.get('/delete/:id', (req, res, next) => {
     
      users.deleteRecord(req.params.id)
         .then(function(results){
 
-          res.json({results});
+          res.redirect("/app/users/index");
             
         })
         .catch(function(err){
            res.json({error:err.message});
         })
     
-
   });
 
 
 
 
 // Auth User
-  router.post('/auth', async (req, res, next) => {
-    const { email, password } = req.body;
-
-    const token = jwt.sign(req.body, "secret", {
-           expiresIn: '15m'
-   });
-   
-    const { iat, exp } = jwt.decode(token);
-      // Respond with token
-    res.send({ iat, exp, token });
-   
-   //res.status(400).json({ token});
-
-  });
+//  router.post('/auth', async (req, res, next) => {
+//    const { email, password } = req.body;
+//
+//    const token = jwt.sign(req.body, "secret", {
+//           expiresIn: '15m'
+//   });
+//   
+//    const { iat, exp } = jwt.decode(token);
+//      // Respond with token
+//    res.send({ iat, exp, token });
+//   
+//   //res.status(400).json({ token});
+//
+//  });
 
 module.exports = router;
