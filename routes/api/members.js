@@ -12,12 +12,12 @@ router.get('/', (req, res, next) =>{
 
     users.getAll()
         .then(function(results){
-         // res.json({results});
+          res.json({results});
   
-            res.render('index', {
-                title: 'User App',
-                results
-            })
+//            res.render('index', {
+//                title: 'User App',
+//                results
+//            })
 
         })
         .catch(function(err){
@@ -63,9 +63,9 @@ router.post('/', (req, res) => {
         .then(function(results){
             //use the results here
           //for now just output them
-          //res.json({results});
+          res.json({results});
           
-          res.redirect("/api/members");
+//          res.redirect("/api/members");
             
         })
         .catch(function(err){
