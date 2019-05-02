@@ -26,27 +26,30 @@ router.get('/', (req, res, next) =>{
 //      res.json({result});
 
 
-    users.getUsers()
+    users.getAll()
         .then(function(results){
           res.json({results});
 
         })
         .catch(function(err){
-          console.log("Promise rejection error: "+err);
+          //console.log("Promise rejection error: "+err);
+          res.json({error:err.message});
         })
 });
 
 // Get Single User
 router.get('/:id', (req, res, next) => {
     
-      users.getUserById(req.params.id)
+      users.getById(req.params.id)
         .then(function(results){
+            //use the results here
+          //for now just output them
           res.json({results});
             
         })
         .catch(function(err){
-          console.log("Promise rejection error: "+err);
-            res.json({error:err.message});
+           //console.log("Promise rejection error: "+err);
+           res.json({error:err.message});
         })
     
 //     connection.query('SELECT * FROM users WHERE id = ' + connection.escape(req.params.id), function (error, results, fields) {
@@ -89,34 +92,46 @@ router.post('/', (req, res) => {
     if (!user.name || !user.email) {
       return res.status(400).json({ msg: 'Please include a name and email' });
     }
+    
+    users.addRecord(user)
+        .then(function(results){
+            //use the results here
+          //for now just output them
+          res.json({results});
+            
+        })
+        .catch(function(err){
+           //console.log("Promise rejection error: "+err);
+           res.json({error:err.message});
+        })
   
-   bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(user.password, salt, (err, hash) => {
-        // Hash Password
-        user.password = hash;
-        
-        connection.query('INSERT INTO users SET ?', user, function (error, results, fields) {
-            if(error){
-                //var e = error.sqlMessage;
-                res.json({error});
-                res.end();
-            }
-            else{
-                res.send('Inserted');
-                res.end();
-            }
-
-        });
-        // Save User
-//        try {
-//          const newUser = await user.save();
-//          res.send(201);
-//          next();
-//        } catch (err) {
-//          return next(new errors.InternalError(err.message));
-//        }
-      });
-    });
+//   bcrypt.genSalt(10, (err, salt) => {
+//      bcrypt.hash(user.password, salt, (err, hash) => {
+//        // Hash Password
+//        user.password = hash;
+//        
+//        connection.query('INSERT INTO users SET ?', user, function (error, results, fields) {
+//            if(error){
+//                //var e = error.sqlMessage;
+//                res.json({error});
+//                res.end();
+//            }
+//            else{
+//                res.send('Inserted');
+//                res.end();
+//            }
+//
+//        });
+//        // Save User
+////        try {
+////          const newUser = await user.save();
+////          res.send(201);
+////          next();
+////        } catch (err) {
+////          return next(new errors.InternalError(err.message));
+////        }
+//      });
+//    });
   });
 
 

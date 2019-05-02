@@ -1,6 +1,6 @@
 //'use strict'
 const connection = require('./connection');
-
+const bcrypt = require('bcryptjs');
 
 //exports.getUsers = (req, res)=>{
 //    connection.query('SELECT * FROM users', function (error, results, fields) {
@@ -21,22 +21,25 @@ const connection = require('./connection');
 //    });
 //}
 
-module.exports.getUsers = () =>{
+module.exports.getAll = () =>{
     return new Promise(function(resolve, reject){
       connection.query(
           "SELECT * FROM users", 
           function(error, results){                                                
               if(error){
-                  reject(new Error("Error!!!"));
+                  reject(new Error(error));
               }else{
-                  resolve(results);
+                  if(results.length > 0)
+                    resolve(results);
+                  else
+                    reject(new Error("No users"));    
               }
           }
       )}
     );
-}
+};
 
-module.exports.getUserById = (id) => {
+module.exports.getById = (id) => {
    
         return new Promise(function(resolve, reject){
             connection.query('SELECT * FROM users WHERE id = ' + connection.escape(id), function (error, results, fields) {                                                
@@ -51,13 +54,32 @@ module.exports.getUserById = (id) => {
 
                     }
                 }
-            )}
+            )
+        });
+};
+
+module.exports.addRecord = (record)=>{
+    
+    return new Promise(function(resolve, reject){ 
         
- //if(results.length > 0)
-//              res.json({results});
-//            else
-//              res.status(400).json({msg:`No user with the id: ${req.params.id}`});
-//            res.end();
-        );
-}
+        bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(record.password, salt, (err, hash) => {
+          // Hash Password
+          record.password = hash;
+
+          connection.query('INSERT INTO users SET ?', record, function (error, results, fields) {
+              if(error){
+                  reject(new Error(error));
+              }
+              else{
+                  resolve(results);
+              }
+
+          });
+
+
+        });
+      });
+    });
+};
 
