@@ -3,7 +3,6 @@
 {{#each results}}
     <li class="list-group-item">
 
-        <span>{{this.name}} : {{this.email}}<span>
     <form action="/app/users/update/{{this.id}}" method="POST" class="mb-4">
            <div class="form-group">
              <label for="name">Name</label>

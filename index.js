@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 var exphbs  = require('express-handlebars');
+const { check, validationResult } = require('express-validator/check');
 const app = express();
 
 // Body Parser Middleware
