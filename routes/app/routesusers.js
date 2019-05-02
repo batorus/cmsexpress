@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 //const auth = require('./auth');
 const users = require('../../db/users')
+const { check, validationResult } = require('express-validator/check');
 const router = express.Router();
 
 const connection = require('../../db/connection');
@@ -50,7 +51,24 @@ router.get('/edit/:id', (req, res, next) => {
 });
 
 // Create User
-router.post('/create', (req, res) => {
+router.post('/create', 
+    [
+      // username must be an email
+      check('name').not().isEmpty(),
+      check('email').isEmail(),
+      // password must be at least 5 chars long
+      check('password').isLength({ min: 5 })
+    ], 
+    (req, res) => {
+        
+      const errors = validationResult(req);
+      
+      if (!errors.isEmpty()) {
+        //return res.status(422).json({ errors: errors.array() });
+        return res.render('users/index', {errors: errors.array()})
+
+      }
+
     const {name, email, password} = req.body;
     
     const user = {
@@ -60,9 +78,9 @@ router.post('/create', (req, res) => {
       active : 1
     };
 
-    if (!user.name || !user.email) {
-      return res.status(400).json({ msg: 'Please include a name and email' });
-    }
+//    if (!user.name || !user.email) {
+//      return res.status(400).json({ msg: 'Please include a name and email' });
+//    }
     
     users.addRecord(user)
         .then(function(results){
