@@ -54,22 +54,29 @@ router.get('/edit/:id', (req, res, next) => {
 router.post('/create', 
     [
       // username must be an email
-      check('name').not().isEmpty(),
-      check('email').isEmail(),
+      check('name').not().isEmpty().withMessage("Invalid Name"),
+      check('email').isEmail().withMessage("Invalid Email"),
       // password must be at least 5 chars long
-      check('password').isLength({ min: 5 })
+      check('password').isLength({ min: 5 }).withMessage("Invalid Password")
     ], 
     (req, res) => {
-        
+      const {name, email, password} = req.body;  
       const errors = validationResult(req);
+      
+      console.log(req.body.name);
       
       if (!errors.isEmpty()) {
         //return res.status(422).json({ errors: errors.array() });
-        return res.render('users/index', {errors: errors.array()})
+        return res.render('users/index', {
+            name,
+            email,
+            password,
+            errors: errors.array()
+        })
 
       }
 
-    const {name, email, password} = req.body;
+    
     
     const user = {
       name,
@@ -94,9 +101,7 @@ router.post('/create',
 
            res.json({error:err.message});
         })
-  
-
-  });
+});
 
 
   // Update user
