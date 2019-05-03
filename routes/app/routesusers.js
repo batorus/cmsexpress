@@ -23,7 +23,8 @@ router.get('/index', (req, res, next) =>{
         })
         .catch(function(err){
           //console.log("Promise rejection error: "+err);
-          res.json({error:err.message});
+          //res.json({error:err.message});
+          console.log(err.message);
         })
 });
 
@@ -44,7 +45,8 @@ router.get('/edit/:id', (req, res, next) => {
         })
         .catch(function(err){
 
-           res.json({error:err.message});
+           //res.json({error:err.message});
+          console.log(err.message);
         })
     
 
@@ -60,21 +62,19 @@ router.post('/create',
       check('password').isLength({ min: 5 }).withMessage("Invalid Password")
     ], 
     (req, res) => {
+        
       const {name, email, password} = req.body;  
       const errors = validationResult(req);
       
-      console.log(req.body.name);
-      
-      if (!errors.isEmpty()) {
-        //return res.status(422).json({ errors: errors.array() });
-        return res.render('users/index', {
-            name,
-            email,
-            password,
-            errors: errors.array()
-        })
-
-      }
+    if (!errors.isEmpty()) {
+      //return res.status(422).json({ errors: errors.array() });
+      return res.render('users/index', {
+          name,
+          email,
+          password,
+          errors: errors.array()
+      })
+    }
 
     
     
@@ -85,21 +85,20 @@ router.post('/create',
       active : 1
     };
 
-//    if (!user.name || !user.email) {
-//      return res.status(400).json({ msg: 'Please include a name and email' });
-//    }
-    
+ 
     users.addRecord(user)
         .then(function(results){
-            //use the results here
-          //for now just output them
           
-          res.redirect("/app/users/index");
+            res.redirect("/app/users/index");
             
         })
         .catch(function(err){
-
-           res.json({error:err.message});
+            
+//            return res.render('users/index', {
+//                errors: err.message
+//           })
+           //log the error here
+           console.log(err.message);
         })
 });
 
@@ -110,14 +109,13 @@ router.post('/update/:id', (req, res) => {
     
    users.updateRecord(req.params.id, data)
         .then(function(results){
-            //use the results here
-          //for now just output them
-         // res.json({results});
+
            res.redirect("/app/users/index"); 
         })
         .catch(function(err){
 
-           res.json({error:err.message});
+           //res.json({error:err.message});
+          console.log(err.message);
         })  
     
 
@@ -134,28 +132,12 @@ router.get('/delete/:id', (req, res, next) => {
             
         })
         .catch(function(err){
-           res.json({error:err.message});
+           //res.json({error:err.message});
+           console.log(err.message);
         })
     
   });
 
 
-
-
-// Auth User
-//  router.post('/auth', async (req, res, next) => {
-//    const { email, password } = req.body;
-//
-//    const token = jwt.sign(req.body, "secret", {
-//           expiresIn: '15m'
-//   });
-//   
-//    const { iat, exp } = jwt.decode(token);
-//      // Respond with token
-//    res.send({ iat, exp, token });
-//   
-//   //res.status(400).json({ token});
-//
-//  });
 
 module.exports = router;
