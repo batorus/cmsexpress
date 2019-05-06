@@ -22,8 +22,7 @@ router.get('/index', (req, res, next) =>{
 
         })
         .catch(function(err){
-          //console.log("Promise rejection error: "+err);
-          //res.json({error:err.message});
+
           console.log(err.message);
         })
 });
@@ -33,9 +32,6 @@ router.get('/edit/:id', (req, res, next) => {
     
       users.getById(req.params.id)
         .then(function(results){
-            //use the results here
-          //for now just output them
-          //res.json({results});
 
             res.render('users/edit', {
                 title: 'Update User',
@@ -55,7 +51,7 @@ router.get('/edit/:id', (req, res, next) => {
 // Create User
 router.post('/create', 
     [
-      // username must be an email
+
       check('name').not().isEmpty().withMessage("Invalid Name"),
       check('email').isEmail().withMessage("Invalid Email"),
       // password must be at least 5 chars long
