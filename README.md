@@ -5,7 +5,7 @@ An API is also provided in the "routes/api/members.js" file.
 
 ## Install the Application
 
-After cloning the application, run "npm install" command in the root folder, in order to install the packages.
+After cloning the application, run the following command in the root folder, in order to install the packages:
 
     npm install
 
