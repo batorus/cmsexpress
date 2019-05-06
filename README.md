@@ -9,4 +9,4 @@ After cloning the application, run the following command in the root folder, in 
 
     npm install
 
-That's it for now! 
+This is it for now! 
